@@ -65,6 +65,8 @@ jobs:
             runner: large-runner
           - service: odiglet
             runner: ubuntu-latest
+          - service: ui
+            runner: ubuntu-latest
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout repository
@@ -87,7 +89,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Push Docker Image for ${{ matrix.service }}
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           tags: joeylee1997/odigos-${{ matrix.service }}:${{ steps.extract_tag.outputs.tag }}
@@ -97,6 +99,7 @@ jobs:
             ${{
               (matrix.service == 'odiglet' && 'odiglet/Dockerfile') ||
               (matrix.service == 'collector' && 'collector/Dockerfile') ||
+              (matrix.service == 'ui' && 'frontend/Dockerfile') ||
               'Dockerfile'
             }}
           context: >-
